@@ -72,3 +72,11 @@ You can also pass flags directly:
 
 - **Permissions**: If the scripts are not executable, run `chmod +x install.sh uninstall.sh`.
 - **Dock Grouping**: The installer assigns unique window classes (`AntigravityIDE` and `Antigravity`) to ensure your dock correctly separates the two applications.
+
+## Credits
+
+This installer takes heavy inspiration from the [Android Studio Installer](https://github.com/solder3t/android-studio-installer) and the [Antigravity 2 Fedora Installer](https://github.com/jrobertogarcia/antigravity-2-fedora-installer) by [jrobertogarcia](https://github.com/jrobertogarcia). Thank you for the foundational templates, logic, and inspiration!
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
