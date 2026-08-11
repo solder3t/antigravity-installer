@@ -222,6 +222,9 @@ StartupWMClass=$wm_class
 DESKTOP
     chmod 644 "$desktop_dir/$pkg_name.desktop"
 
+    echo "Copying icon..."
+    cp antigravity.png "$pixmap_dir/antigravity.png"
+
     echo "Writing package control file..."
     cat > "$control_dir/control" <<CONTROL
 Package: $pkg_name

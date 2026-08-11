@@ -17,6 +17,7 @@ ExclusiveArch:  x86_64
 
 Source0:        __URL_X64__
 Source1:        antigravity-ide.desktop
+Source2:        antigravity.png
 
 BuildRequires:  tar
 BuildRequires:  gzip
@@ -69,7 +70,9 @@ chmod +x %{buildroot}%{_bindir}/antigravity-ide
 mkdir -p %{buildroot}%{_datadir}/applications
 install -m 644 %{SOURCE1} %{buildroot}%{_datadir}/applications/antigravity-ide.desktop
 
-# Icons - natively parsed if available, otherwise omitted here and relying on internal resources
+# Icons
+mkdir -p %{buildroot}%{_datadir}/pixmaps
+install -m 644 %{SOURCE2} %{buildroot}%{_datadir}/pixmaps/antigravity.png
 
 %post
 /usr/bin/update-desktop-database &>/dev/null || :
@@ -81,6 +84,7 @@ install -m 644 %{SOURCE1} %{buildroot}%{_datadir}/applications/antigravity-ide.d
 /opt/antigravity-ide-Linux/
 %{_bindir}/antigravity-ide
 %{_datadir}/applications/antigravity-ide.desktop
+%{_datadir}/pixmaps/antigravity.png
 
 %changelog
 * Tue Aug 11 2026 Maintainer <maintainer@example.com>

@@ -15,6 +15,16 @@ NC='\033[0m' # No Color
 
 echo -e "${BLUE}${BOLD}=== Antigravity Uninstaller ===${NC}"
 
+# Guardrail: Check if installed via package manager
+if (command -v dpkg-query &>/dev/null && dpkg-query -W -f='${Status}' antigravity-ide 2>/dev/null | grep -q "ok installed") || \
+   (command -v dpkg-query &>/dev/null && dpkg-query -W -f='${Status}' antigravity-agent 2>/dev/null | grep -q "ok installed") || \
+   (command -v rpm &>/dev/null && rpm -q antigravity-ide &>/dev/null) || \
+   (command -v rpm &>/dev/null && rpm -q antigravity-agent &>/dev/null); then
+    echo -e "${RED}Error: Antigravity appears to be installed via a system package manager (.deb or .rpm).${NC}" >&2
+    echo -e "Please use ${BOLD}sudo apt remove 'antigravity-*'${NC} or ${BOLD}sudo dnf remove 'antigravity-*'${NC} instead to prevent corrupting your package state." >&2
+    exit 1
+fi
+
 # Default values
 REMOVE_IDE=false
 REMOVE_AGENT=false

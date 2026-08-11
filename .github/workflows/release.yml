@@ -1,0 +1,49 @@
+name: Release Packages
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Packaging Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dpkg-dev fakeroot rpm rpmdevtools curl jq python3
+          # Download and install spectool locally since it might not be in standard ubuntu repos easily or we can just download the script
+          sudo curl -L -o /usr/local/bin/spectool https://raw.githubusercontent.com/ignatenkobrain/spectool/master/spectool.in || true
+          # Actually, ubuntu has rpmdevtools which includes spectool. Let's just install rpmdevtools.
+          sudo chmod +x /usr/local/bin/spectool || true
+
+      - name: Build DEB and RPM Packages
+        run: |
+          mkdir -p ~/rpkg
+          export OUTDIR=~/rpkg
+          # rpkg is used in build.sh but we can modify build.sh or install rpkg or rpm-build
+          # rpkg is fedora specific, but rpm-build is standard. Wait, build.sh uses `rpkg local --outdir "$OUTDIR" --spec "$spec_file"`.
+          # rpkg is not natively in Ubuntu. Let's install rpkg via pip or use a fedora container.
+          # A better approach is to use a Fedora container for RPMs or we can just run a docker container.
+          
+          # Let's use docker to build RPMs natively on fedora.
+          docker run --rm -v ${{ github.workspace }}:/workspace -v ~/rpkg:/rpkg -w /workspace fedora:latest /bin/bash -c "
+            dnf install -y rpm-build rpmdevtools rpkg curl python3
+            export OUTDIR=/rpkg
+            ./build.sh rpm
+          "
+          
+          # Build DEBs on Ubuntu natively
+          export OUTDIR=~/rpkg
+          ./build.sh deb
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            ~/rpkg/*.deb
+            ~/rpkg/*/*.rpm
