@@ -68,6 +68,23 @@ You can also pass flags directly:
 ./uninstall.sh --both
 ```
 
+## Package Building
+
+If you prefer to distribute static, offline packages instead of using the bash installer, you can use the bundled `build.sh` script to generate native `.deb` and `.rpm` packages for both the IDE and the Agent.
+
+```bash
+# Build DEB packages (requires dpkg-deb)
+./build.sh deb
+
+# Build RPM packages (requires spectool and rpkg)
+./build.sh rpm
+
+# Build both DEB and RPM packages
+./build.sh all
+```
+
+The script will dynamically fetch the latest release versions from Google, download the binaries, and inject them into standard Linux packages outputted to `~/rpkg` (or the directory specified by the `OUTDIR` environment variable).
+
 ## Troubleshooting
 
 - **Permissions**: If the scripts are not executable, run `chmod +x install.sh uninstall.sh`.
