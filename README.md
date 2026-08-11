@@ -12,7 +12,19 @@ A secure, robust, and native installation script for Antigravity 2.0 on Linux. T
 
 ## Usage
 
-You can run the installer interactively:
+You can run the installer interactively. 
+
+**One-liner (No clone required):**
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/solder3t/antigravity-installer/main/install.sh)
+```
+
+**Using the website shortcut (recommended):**
+```bash
+curl -fsSL https://solder3t.github.io/antigravity-installer | sh
+```
+
+**Local script:**
 ```bash
 ./install.sh
 ```
