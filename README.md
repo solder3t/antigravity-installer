@@ -75,7 +75,7 @@ You can also pass flags directly:
 
 ## Credits
 
-This installer takes heavy inspiration from the [Android Studio Installer](https://github.com/solder3t/android-studio-installer) and the [Antigravity 2 Fedora Installer](https://github.com/jrobertogarcia/antigravity-2-fedora-installer) by [jrobertogarcia](https://github.com/jrobertogarcia). Thank you for the foundational templates, logic, and inspiration!
+This installer adapts logic and templates from the [Antigravity 2 Fedora Installer](https://github.com/jrobertogarcia/antigravity-2-fedora-installer) by [jrobertogarcia](https://github.com/jrobertogarcia). Thank you for the foundational inspiration!
 
 ## License
 
