@@ -79,4 +79,6 @@ This installer takes heavy inspiration from the [Android Studio Installer](https
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project (the installer utility) is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+> **Note**: The upstream Antigravity 2.0 binaries packaged and downloaded by this utility are proprietary and subject to the [Google Terms of Service](https://policies.google.com/terms) and any applicable Antigravity specific end-user license agreements.
