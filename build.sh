@@ -25,20 +25,26 @@ RESOLVED_URL_AGENT_X64=""
 
 # ── Version Auto-Detection ──────────────────────────────────────────────────
 resolve_latest_version() {
-    local feed_url="https://storage.googleapis.com/antigravity-public/latest.json"
+    local feed_url="https://antigravity-auto-updater-974169037036.us-central1.run.app/releases"
     echo -e "${YELLOW}Checking for the latest stable releases...${NC}"
 
     local json
     json=$(curl -fsSL --max-time 5 "$feed_url" 2>/dev/null) || true
 
     if [[ -n "$json" ]] && command -v python3 &>/dev/null; then
-        # IDE
-        RESOLVED_VERSION_IDE=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('ide', {}).get('version', ''))" 2>/dev/null || true)
-        RESOLVED_URL_IDE_X64=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('ide', {}).get('url_x64', ''))" 2>/dev/null || true)
+        local fetched_version fetched_exec_id
+        fetched_version=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data[0].get('version', ''))" 2>/dev/null || true)
+        fetched_exec_id=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data[0].get('execution_id', ''))" 2>/dev/null || true)
 
-        # Agent
-        RESOLVED_VERSION_AGENT=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('agent', {}).get('version', ''))" 2>/dev/null || true)
-        RESOLVED_URL_AGENT_X64=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('agent', {}).get('url_x64', ''))" 2>/dev/null || true)
+        if [[ -n "$fetched_version" && -n "$fetched_exec_id" ]]; then
+            # IDE
+            RESOLVED_VERSION_IDE="$fetched_version"
+            RESOLVED_URL_IDE_X64="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/${fetched_version}-${fetched_exec_id}/linux-x64/Antigravity%20IDE.tar.gz"
+
+            # Agent
+            RESOLVED_VERSION_AGENT="$fetched_version"
+            RESOLVED_URL_AGENT_X64="https://storage.googleapis.com/antigravity-public/antigravity-hub/${fetched_version}-${fetched_exec_id}/linux-x64/Antigravity.tar.gz"
+        fi
     fi
 
     # Fallbacks for IDE
