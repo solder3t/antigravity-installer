@@ -32,14 +32,14 @@ APP_MODE="" # Starts empty to force interaction if not provided
 CHECK_UPDATE=false
 FORCE_REINSTALL=false
 
-VERSION_IDE="2.1.1"
-VERSION_AGENT="2.4.2"
+VERSION_IDE="2.5.5"
+VERSION_AGENT="2.8.1"
 APP_VERSION=""
 
-DOWNLOAD_URL_IDE_X64="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/2.1.1-6123990880747520/linux-x64/Antigravity%20IDE.tar.gz"
-DOWNLOAD_URL_IDE_ARM64="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/2.1.1-6123990880747520/linux-arm/Antigravity%20IDE.tar.gz"
-DOWNLOAD_URL_AGENT_X64="https://storage.googleapis.com/antigravity-public/antigravity-hub/2.4.2-6711062033203200/linux-x64/Antigravity.tar.gz"
-DOWNLOAD_URL_AGENT_ARM64="https://storage.googleapis.com/antigravity-public/antigravity-hub/2.4.2-6711062033203200/linux-arm/Antigravity.tar.gz"
+DOWNLOAD_URL_IDE_X64="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/2.5.5-4923483625488384/linux-x64/Antigravity%20IDE.tar.gz"
+DOWNLOAD_URL_IDE_ARM64="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/2.5.5-4923483625488384/linux-arm/Antigravity%20IDE.tar.gz"
+DOWNLOAD_URL_AGENT_X64="https://storage.googleapis.com/antigravity-public/antigravity-hub/2.8.1-6512087774658560/linux-x64/Antigravity.tar.gz"
+DOWNLOAD_URL_AGENT_ARM64="https://storage.googleapis.com/antigravity-public/antigravity-hub/2.8.1-6512087774658560/linux-arm/Antigravity.tar.gz"
 DOWNLOAD_URL_IDE=""
 DOWNLOAD_URL_AGENT=""
 
@@ -214,7 +214,7 @@ fi
 # Fetches the latest stable releases from the public update feed.
 # Falls back to bundled hardcoded versions if the feed is unreachable or parsing fails.
 resolve_latest_version() {
-    local feed_url="https://antigravity-auto-updater-974169037036.us-central1.run.app/releases"
+    local feed_url="https://storage.googleapis.com/antigravity-public/latest.json"
 
     echo -e "${YELLOW}Checking for the latest stable release...${NC}"
 
@@ -230,20 +230,21 @@ resolve_latest_version() {
     # Attempt to parse using Python since it is almost universally available on modern Linux
     # We fallback to bundled versions if python fails or isn't installed.
     if command -v python3 &>/dev/null; then
-        local fetched_version fetched_exec_id
-        fetched_version=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data[0].get('version', ''))" 2>/dev/null || true)
-        fetched_exec_id=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data[0].get('execution_id', ''))" 2>/dev/null || true)
+        local fetched_version fetched_url_x64 fetched_url_arm64
+        fetched_version=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('$APP_MODE', {}).get('version', ''))" 2>/dev/null || true)
+        fetched_url_x64=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('$APP_MODE', {}).get('url_x64', ''))" 2>/dev/null || true)
+        fetched_url_arm64=$(echo "$json" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('$APP_MODE', {}).get('url_arm64', ''))" 2>/dev/null || true)
 
-        if [[ -n "$fetched_version" && -n "$fetched_exec_id" ]]; then
+        if [[ -n "$fetched_version" && -n "$fetched_url_x64" && -n "$fetched_url_arm64" ]]; then
             if [[ "$APP_MODE" == "ide" ]]; then
                 VERSION_IDE="$fetched_version"
-                DOWNLOAD_URL_IDE_X64="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/${fetched_version}-${fetched_exec_id}/linux-x64/Antigravity%20IDE.tar.gz"
-                DOWNLOAD_URL_IDE_ARM64="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/${fetched_version}-${fetched_exec_id}/linux-arm/Antigravity%20IDE.tar.gz"
+                DOWNLOAD_URL_IDE_X64="$fetched_url_x64"
+                DOWNLOAD_URL_IDE_ARM64="$fetched_url_arm64"
                 echo -e "${GREEN}✓ Resolved IDE to v${VERSION_IDE}${NC}"
             else
                 VERSION_AGENT="$fetched_version"
-                DOWNLOAD_URL_AGENT_X64="https://storage.googleapis.com/antigravity-public/antigravity-hub/${fetched_version}-${fetched_exec_id}/linux-x64/Antigravity.tar.gz"
-                DOWNLOAD_URL_AGENT_ARM64="https://storage.googleapis.com/antigravity-public/antigravity-hub/${fetched_version}-${fetched_exec_id}/linux-arm/Antigravity.tar.gz"
+                DOWNLOAD_URL_AGENT_X64="$fetched_url_x64"
+                DOWNLOAD_URL_AGENT_ARM64="$fetched_url_arm64"
                 echo -e "${GREEN}✓ Resolved Agent to v${VERSION_AGENT}${NC}"
             fi
         else
