@@ -1,0 +1,29 @@
+name: Update Versions
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-versions:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main # Ensure we push to the main branch
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run version updater script
+        run: python3 scripts/update_versions.py
+        
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update Antigravity versions"
+          branch: main
+          file_pattern: "install.sh build.sh"
