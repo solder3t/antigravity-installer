@@ -427,7 +427,7 @@ if [[ "$DRY_RUN" == "true" ]]; then
 fi
 
 # Perform download with retry logic
-HTTP_CODE=$(curl -sSL -w "%{http_code}" -o "$TEMP_ARCHIVE" "$DOWNLOAD_URL")
+HTTP_CODE=$(curl -# -L -w "%{http_code}" -o "$TEMP_ARCHIVE" "$DOWNLOAD_URL")
 if [[ "$HTTP_CODE" -ne 200 ]]; then
     echo -e "${RED}Error: Download failed with HTTP status code $HTTP_CODE${NC}" >&2
     exit 1
