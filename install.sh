@@ -13,6 +13,7 @@
 #   --offline          Skip the version feed check and use the bundled fallback version.
 #   --dry-run          Run pre-flight checks and download the package but do not write any files.
 #   --check-update     Check if an update is available for the installed version.
+#   -f, --force        Force reinstall even if already up to date.
 #   -h, --help         Show help message.
 
 set -euo pipefail
@@ -29,6 +30,7 @@ NC='\033[0m' # No Color
 INSTALL_SCOPE="system"
 APP_MODE="" # Starts empty to force interaction if not provided
 CHECK_UPDATE=false
+FORCE_REINSTALL=false
 
 VERSION_IDE="2.1.1"
 VERSION_AGENT="2.4.2"
@@ -73,6 +75,7 @@ Options:
   --offline          Skip the version feed check and use the bundled fallback version.
   --dry-run          Perform pre-flight checks and package download only. No files written.
   --check-update     Check if an update is available for the installed version.
+  -f, --force        Force reinstall even if already up to date.
   -y, --yes          Automatic yes to prompts (bypass confirmation).
   -h, --help         Show this help message.
 EOF
@@ -120,6 +123,11 @@ while [[ $# -gt 0 ]]; do
         --check-update)
             CHECK_UPDATE=true
             FORWARD_ARGS+=("--check-update")
+            shift
+            ;;
+        -f|--force)
+            FORCE_REINSTALL=true
+            FORWARD_ARGS+=("-f")
             shift
             ;;
         -y|--yes)
@@ -335,7 +343,13 @@ if [[ "$CURRENT_VERSION" != "none" ]]; then
     if [[ "$CURRENT_VERSION" == "legacy" ]]; then
         echo -e "${GREEN}Upgrade Notice: An existing installation was detected. Upgrading ${APP_NAME_PRETTY} to v${APP_VERSION}...${NC}"
     elif [[ "$CURRENT_VERSION" == "$APP_VERSION" ]]; then
-        echo -e "${YELLOW}Notice: ${APP_NAME_PRETTY} v${CURRENT_VERSION} is already installed. Reinstalling...${NC}"
+        if [[ "$FORCE_REINSTALL" == "true" ]]; then
+            echo -e "${YELLOW}Notice: ${APP_NAME_PRETTY} v${CURRENT_VERSION} is already installed. Reinstalling (force)...${NC}"
+        else
+            echo -e "${GREEN}${APP_NAME_PRETTY} is already up to date (v${CURRENT_VERSION}).${NC}"
+            echo -e "Use --force to reinstall."
+            exit 0
+        fi
     else
         echo -e "${GREEN}Upgrade Notice: Upgrading ${APP_NAME_PRETTY} from v${CURRENT_VERSION} to v${APP_VERSION}...${NC}"
     fi

@@ -57,6 +57,7 @@ Or you can use command-line flags to automate the installation:
 | `--url <url>` | Override the default download URL with a custom tarball link. |
 | `--offline` | Skip the version feed check and use the bundled fallback version. |
 | `--dry-run` | Perform pre-flight checks and package download only. No files written. |
+| `-f, --force` | Force reinstall even if already up to date. |
 | `--check-update` | Check if an update is available for the currently installed version. |
 | `-y, --yes` | Automatic yes to prompts (bypass confirmation). |
 
