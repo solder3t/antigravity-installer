@@ -12,10 +12,10 @@ NC='\033[0m' # No Color
 OUTDIR="${OUTDIR:-$HOME/rpkg}"
 
 FALLBACK_VERSION_IDE="2.5.5"
-FALLBACK_VERSION_AGENT="2.8.1"
+FALLBACK_VERSION_AGENT="2.9.1"
 
 FALLBACK_URL_IDE_X64="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/2.5.5-4923483625488384/linux-x64/Antigravity%20IDE.tar.gz"
-FALLBACK_URL_AGENT_X64="https://storage.googleapis.com/antigravity-public/antigravity-hub/2.8.1-6512087774658560/linux-x64/Antigravity.tar.gz"
+FALLBACK_URL_AGENT_X64="https://storage.googleapis.com/antigravity-public/antigravity-hub/2.9.1-4871453687021568/linux-x64/Antigravity.tar.gz"
 
 RESOLVED_VERSION_IDE=""
 RESOLVED_URL_IDE_X64=""
