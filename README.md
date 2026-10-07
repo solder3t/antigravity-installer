@@ -21,7 +21,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/solder3t/antigravity-install
 
 **Using the website shortcut (recommended):**
 ```bash
-curl -fsSL https://solder3t.github.io/antigravity-installer | sh
+curl -fsSL https://solder3t.github.io/antigravity-installer | bash
 ```
 
 *(Note: To pass arguments when piping to `sh`, you must use `sh -s --`. For example: `curl -fsSL ... | sh -s -- --force`)*
